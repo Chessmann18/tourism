@@ -1,100 +1,91 @@
+import tkinter as tk
 
+# Функция для отправки запроса на бронирование
+def book_tour():
+    destination = destination_entry.get()
+    num_travelers = travelers_entry.get()
+    date = date_entry.get()
+    
+    # Здесь может быть логика для бронирования тура
+    
+    # Выводим сообщение об успешном бронировании
+    result_label.config(text="Бронирование на {} для {} человек на {}".format(destination, num_travelers, date))
 
-tkinter как tk
-tkinter.ttk как ttk
+# Функция для проверки авторизации пользователя
+def login_user():
+    username = username_entry.get()
+    password = password_entry.get()
+    
+    # Проверяем логин и пароль
+    if username == "user" and password == "password":
+        login_window.destroy()
+        main_window.deiconify()
+    else:
+        error_label.config(text="Неверный логин или пароль")  
 
-Главное окно приложения
-root = tk.Tk()
-root.title("Туристическое агентство")
+# Создаем окно для входа
+login_window = tk.Toplevel()
+login_window.title("Вход")
 
-Создание вкладок
-tab_control = ttk.Notebook(корневой)
+username_label = tk.Label(login_window, text="Логин:")
+username_label.pack()
+username_entry = tk.Entry(login_window)
+username_entry.pack()
 
-Вкладка "О нас"
-about_tab = tk.Frame(tab_control)
-tab_control.add(about_tab, text="О нас")
+password_label = tk.Label(login_window, text="Пароль:")
+password_label.pack()
+password_entry = tk.Entry(login_window, show="*")
+password_entry.pack()
 
-about_text = """
-Мы - туристическое агентство, специализирующееся
-на продаже туров в разные страны.
-У нас можно найти лучшие предложения по доступным ценам.
-"""
+login_button = tk.Button(login_window, text="Войти", command=login_user)
+login_button.pack()
 
-представление информации на выбранной поездке
-def show_trip_info(trip):
-trip_info = trip_data[trip]
-messagebox.showinfo(trip, f"Описание: {trip_info['Описание']}\nЦена: {trip_info['Цена']}")
+error_label = tk.Label(login_window, text="")
+error_label.pack()
 
-about_label = tk.Label(about_tab, text=about_text, pady=10)
-about_label.pack()
+# Создаем главное окно приложения
+main_window = tk.Tk()
+main_window.title("Турагентство")
+main_window.geometry("400x400")
+main_window.protocol("WM_DELETE_WINDOW", lambda: main_window.destroy)  # Закрывать только главное окно
 
-Вкладка "Тур поездки"
-trip_tab = tk.Frame(tab_control)
-tab_control.add(trip_tab, text="Тур поездки")
+# Создаем и размещаем виджеты на главном окне
+destination_label = tk.Label(main_window, text="Место назначения:")
+destination_label.pack()
+destination_entry = tk.Entry(main_window)
+destination_entry.pack()
 
-Глобальные переменные для сохранения данных о поездках
-trip_data = {
-"Норвегия": {"Описание": "Норвегия - великолепная страна с красивой природой.", "Цена": "$1000"},
-"Ирландия": {"Описание": "Ирландия - зеленый рай.", " Цена": "800$"},
-"Швеция": {"Описание": "Швеция - современная страна со скандинавским колоритом.", "Цена": "1200$"}
-}
+travelers_label = tk.Label(main_window, text="Количество путешественников:")
+travelers_label.pack()
+travelers_entry = tk.Entry(main_window)
+travelers_entry.pack()
 
-Функция обработки оформления мероприятия
-def book_trip(trip, visit_date, return_date, name):
-message = f"Поздравляем, {name}! Вы успешно оформили поездку в {trip}.\n"
-f"Данные вылета: {departure_date}\nДата возвращения: {return_date}"
-messagebox.showinfo("Поездка оформления", message)
+date_label = tk.Label(main_window, text="Дата поездки:")
+date_label.pack()
+date_entry = tk.Entry(main_window)
+date_entry.pack()
 
-Создание функций для каждой поездки
-для поездки в trip_data:
-trip_button = tk.Button(trip_tab, text=trip,
-команда=lambda t=trip: show_trip_info(t))
-trip_button.pack(pady=5)
+# Создаем случайный список туров
+tours = ["Париж", "Рим", "Лондон", "Барселона", "Токио"]
 
-Оформление поездки
-booking_frame = tk.Frame(trip_tab)
+# Функция для бронирования выбранного тура
+def select_tour(tour_name):
+    destination_entry.insert(0, tour_name)
 
-доставка_label = tk.Label(booking_frame, text="Данные вылета:")
-доставка_label.grid(row=0, columns=0)
+# Создаем и размещаем кнопки для туров
+tours_frame = tk.Frame(main_window)
+tours_frame.pack()
 
-отправка_entry = tk.Entry(booking_frame)
-отправка_entry.grid(строка=0, столбец=1)
+for tour_name in tours:
+    tour_button = tk.Button(tours_frame, text=tour_name, command=lambda name=tour_name: select_tour(name))
+    tour_button.pack(side=tk.LEFT)
 
-return_label = tk.Label(booking_frame, text="Данные возвращения:")
-return_label.grid(row=1, columns=0)
+book_button = tk.Button(main_window, text="Забронировать", command=book_tour)
+book_button.pack()
 
-return_entry = tk.Entry(booking_frame)
-return_entry.grid(строка=1, столбец=1)
+result_label = tk.Label(main_window, text="")
+result_label.pack()
 
-name_label = tk.Label(booking_frame, text="Фамилия и имя:")
-name_label.grid(row=2, columns=0)
-
-name_entry = tk.Entry(booking_frame)
-name_entry.grid(строка=2, столбец=1)
-
-book_button = tk.Button(booking_frame, text="Оформить внутри",
-команда=lambda: book_trip(tab_control.tab(tab_control.select(), "text"),
-доставка_entry.get(),
-return_entry.get(),
-name_entry. get()))
-book_button.grid(row=3, columnspan=2, Pady=10)
-
-booking_frame.pack(pady=10)
-
-Вкладка "Отзывы"
-review_tab = tk.Frame(tab_control)
-tab_control.add(reviews_tab, text="Отзывы")
-
-review_label = tk.Label(reviews_tab, text="Оставьте свой отзыв:")
-review_label.pack(pady=10)
-
-review_entry = tk.Entry(reviews_tab)
-review_entry.pack(pady=5)
-
-submit_button = tk.Button(reviews_tab, text="Отправить отзыв",
-command=lambda: messagebox.showinfo("Отзыв отправлен",
-"Спасибо за ваш отзыв!"))
-submit_button.pack(pady=5)
-
-Отображение приложения
-корень.mainloop()
+# Запускаем цикл обработки событий
+main_window.withdraw()  # Скрываем главное окно до авторизации
+login_window.mainloop()
